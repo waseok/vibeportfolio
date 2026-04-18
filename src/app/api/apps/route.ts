@@ -81,7 +81,8 @@ export async function POST(request: NextRequest) {
     if (error instanceof Error && error.name === "ZodError") {
       return NextResponse.json({ error: "입력 데이터가 올바르지 않습니다." }, { status: 400 });
     }
-    console.error(error);
-    return NextResponse.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[POST /api/apps] error:", message);
+    return NextResponse.json({ error: "서버 오류가 발생했습니다.", detail: message }, { status: 500 });
   }
 }

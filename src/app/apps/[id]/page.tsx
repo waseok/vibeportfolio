@@ -34,7 +34,7 @@ export default async function AppDetailPage({ params }: PageProps) {
 
   if (!app) notFound();
 
-  const tags: string[] = JSON.parse(app.tags);
+  const tags: string[] = app.tags;
   const gradient = CATEGORY_GRADIENTS[app.category] || CATEGORY_GRADIENTS["기타"];
   const badgeColor = CATEGORY_COLORS[app.category] || CATEGORY_COLORS["기타"];
   const comments: Comment[] = app.comments.map((c) => ({

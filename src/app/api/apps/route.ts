@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
     approved: true,
     ...(search && {
       OR: [
-        { title: { contains: search } },
-        { description: { contains: search } },
+        { title: { contains: search, mode: "insensitive" as const } },
+        { description: { contains: search, mode: "insensitive" as const } },
       ],
     }),
     ...(category && category !== "전체" && { category }),
@@ -42,7 +42,6 @@ export async function GET(request: NextRequest) {
 
   const serialized = apps.map((app) => ({
     ...app,
-    tags: JSON.parse(app.tags) as string[],
     createdAt: app.createdAt.toISOString(),
     updatedAt: app.updatedAt.toISOString(),
   }));
@@ -64,7 +63,7 @@ export async function POST(request: NextRequest) {
         url: data.url,
         thumbnailUrl,
         category: data.category,
-        tags: JSON.stringify(data.tags),
+        tags: data.tags,
         submitterName: data.submitterName || "익명",
       },
       include: { _count: { select: { comments: true } } },
@@ -73,7 +72,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         ...app,
-        tags: JSON.parse(app.tags) as string[],
         createdAt: app.createdAt.toISOString(),
         updatedAt: app.updatedAt.toISOString(),
       },

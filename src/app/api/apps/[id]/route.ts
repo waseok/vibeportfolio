@@ -19,7 +19,6 @@ export async function GET(
 
   return NextResponse.json({
     ...app,
-    tags: JSON.parse(app.tags) as string[],
     createdAt: app.createdAt.toISOString(),
     updatedAt: app.updatedAt.toISOString(),
   });

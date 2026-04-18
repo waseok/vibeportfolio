@@ -16,6 +16,7 @@ import {
   Tag,
 } from "lucide-react";
 import ShareButton from "@/components/apps/share-button";
+import EditAppButton from "@/components/apps/edit-app-button";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -134,7 +135,7 @@ export default async function AppDetailPage({ params }: PageProps) {
             </div>
 
             {/* Action buttons */}
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <a
                 href={app.url}
                 target="_blank"
@@ -145,6 +146,12 @@ export default async function AppDetailPage({ params }: PageProps) {
                 {getDomain(app.url)} 열기
               </a>
               <ShareButton url={app.url} title={app.title} />
+              <EditAppButton app={{
+                ...app,
+                tags: app.tags,
+                createdAt: app.createdAt.toISOString(),
+                updatedAt: app.updatedAt.toISOString(),
+              }} />
             </div>
           </div>
         </div>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MessageSquare, Eye, ExternalLink } from "lucide-react";
 import { AppItem } from "@/types";
 import { cn, getInitials } from "@/lib/utils";
-import { CATEGORY_COLORS, CATEGORY_GRADIENTS } from "@/lib/constants";
+import { CATEGORY_COLORS, CATEGORY_GRADIENTS, CATEGORY_BORDER_COLORS } from "@/lib/constants";
 import { getScreenshotUrl } from "@/lib/og-fetcher";
 
 interface AppCardProps {
@@ -17,13 +17,17 @@ export default function AppCard({ app }: AppCardProps) {
   const [screenshotError, setScreenshotError] = useState(false);
   const gradient = CATEGORY_GRADIENTS[app.category] || CATEGORY_GRADIENTS["기타"];
   const badgeColor = CATEGORY_COLORS[app.category] || CATEGORY_COLORS["기타"];
+  const borderColor = CATEGORY_BORDER_COLORS[app.category] || CATEGORY_BORDER_COLORS["기타"];
 
   function handleClick() {
     fetch(`/api/apps/${app.id}`, { method: "POST" }).catch(() => {});
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg overflow-hidden hover:border-blue-300 hover:shadow-md transition-all duration-200 flex flex-col">
+    <div className={cn(
+      "bg-white border border-slate-200 border-t-4 rounded-lg overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col",
+      borderColor
+    )}>
       <Link
         href={`/apps/${app.id}`}
         className="block flex-1"
@@ -31,19 +35,14 @@ export default function AppCard({ app }: AppCardProps) {
       >
         {/* Thumbnail */}
         <div className="relative aspect-video overflow-hidden">
-          {/* 그라디언트 폴백 — 항상 아래에 깔려 있음 */}
-          <div
-            className={cn(
-              "absolute inset-0 bg-gradient-to-br flex items-center justify-center",
-              gradient
-            )}
-          >
+          {/* 그라디언트 폴백 */}
+          <div className={cn("absolute inset-0 bg-gradient-to-br flex items-center justify-center", gradient)}>
             <span className="text-white text-2xl font-bold opacity-80">
               {getInitials(app.title)}
             </span>
           </div>
 
-          {/* 스크린샷 — 로드되면 그라디언트 위를 덮음 */}
+          {/* 스크린샷 */}
           {!screenshotError && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -57,23 +56,17 @@ export default function AppCard({ app }: AppCardProps) {
               onError={() => setScreenshotError(true)}
             />
           )}
+
+          {/* 제목 오버레이 */}
+          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2.5">
+            <p className="text-white text-sm font-bold leading-snug line-clamp-2 drop-shadow">
+              {app.title}
+            </p>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="p-4">
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <h3 className="font-semibold text-slate-900 text-sm leading-snug line-clamp-2 flex-1">
-              {app.title}
-            </h3>
-            <span
-              className={cn(
-                "flex-shrink-0 text-xs font-medium px-2 py-0.5 rounded-full",
-                badgeColor
-              )}
-            >
-              {app.category}
-            </span>
-          </div>
+        <div className="p-3.5">
           <p className="text-xs text-slate-500 line-clamp-2 mb-3">
             {app.description}
           </p>
@@ -88,13 +81,15 @@ export default function AppCard({ app }: AppCardProps) {
                 {app._count?.comments ?? 0}
               </span>
             </div>
-            <span className="text-slate-400">{app.submitterName}</span>
+            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full", badgeColor)}>
+              {app.category}
+            </span>
           </div>
         </div>
       </Link>
 
       {/* External link button */}
-      <div className="px-4 pb-3">
+      <div className="px-3.5 pb-3">
         <a
           href={app.url}
           target="_blank"

@@ -22,3 +22,11 @@ export const CATEGORY_GRADIENTS: Record<string, string> = {
   소통: "from-purple-500 to-purple-700",
   기타: "from-slate-500 to-slate-700",
 };
+
+export const CATEGORY_BORDER_COLORS: Record<string, string> = {
+  행정: "border-t-blue-500",
+  수업: "border-t-green-500",
+  평가: "border-t-orange-500",
+  소통: "border-t-purple-500",
+  기타: "border-t-slate-400",
+};

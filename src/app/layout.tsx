@@ -12,6 +12,9 @@ const notoSansKR = Noto_Sans_KR({
 export const metadata: Metadata = {
   title: "와석초 학교업무효율화 플랫폼 모음",
   description: "와석초등학교 업무 효율화에 활용되는 웹앱 모음 플랫폼",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

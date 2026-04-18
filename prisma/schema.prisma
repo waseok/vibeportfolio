@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model App {
+  id            Int       @id @default(autoincrement())
+  title         String
+  description   String
+  url           String
+  thumbnailUrl  String?
+  category      String    @default("기타")
+  tags          String    @default("[]")
+  submitterName String    @default("익명")
+  approved      Boolean   @default(true)
+  clickCount    Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  comments      Comment[]
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  appId      Int
+  authorName String   @default("익명")
+  content    String
+  createdAt  DateTime @default(now())
+  app        App      @relation(fields: [appId], references: [id], onDelete: Cascade)
+}

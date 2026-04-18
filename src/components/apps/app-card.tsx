@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
 import { MessageSquare, Eye, ExternalLink } from "lucide-react";
 import { AppItem } from "@/types";
-import { cn } from "@/lib/utils";
-import { CATEGORY_COLORS } from "@/lib/constants";
+import { cn, getInitials } from "@/lib/utils";
+import { CATEGORY_COLORS, CATEGORY_GRADIENTS } from "@/lib/constants";
 import { getScreenshotUrl } from "@/lib/og-fetcher";
 
 interface AppCardProps {
@@ -13,10 +13,12 @@ interface AppCardProps {
 }
 
 export default function AppCard({ app }: AppCardProps) {
+  const [screenshotLoaded, setScreenshotLoaded] = useState(false);
+  const [screenshotError, setScreenshotError] = useState(false);
+  const gradient = CATEGORY_GRADIENTS[app.category] || CATEGORY_GRADIENTS["기타"];
   const badgeColor = CATEGORY_COLORS[app.category] || CATEGORY_COLORS["기타"];
 
-  async function handleClick() {
-    // Fire-and-forget click count increment
+  function handleClick() {
     fetch(`/api/apps/${app.id}`, { method: "POST" }).catch(() => {});
   }
 
@@ -28,14 +30,33 @@ export default function AppCard({ app }: AppCardProps) {
         onClick={handleClick}
       >
         {/* Thumbnail */}
-        <div className="relative aspect-video bg-slate-100 overflow-hidden">
-          <Image
-            src={getScreenshotUrl(app.url)}
-            alt={app.title}
-            fill
-            className="object-cover"
-            unoptimized
-          />
+        <div className="relative aspect-video overflow-hidden">
+          {/* 그라디언트 폴백 — 항상 아래에 깔려 있음 */}
+          <div
+            className={cn(
+              "absolute inset-0 bg-gradient-to-br flex items-center justify-center",
+              gradient
+            )}
+          >
+            <span className="text-white text-2xl font-bold opacity-80">
+              {getInitials(app.title)}
+            </span>
+          </div>
+
+          {/* 스크린샷 — 로드되면 그라디언트 위를 덮음 */}
+          {!screenshotError && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={getScreenshotUrl(app.url)}
+              alt={app.title}
+              className={cn(
+                "absolute inset-0 w-full h-full object-cover transition-opacity duration-300",
+                screenshotLoaded ? "opacity-100" : "opacity-0"
+              )}
+              onLoad={() => setScreenshotLoaded(true)}
+              onError={() => setScreenshotError(true)}
+            />
+          )}
         </div>
 
         {/* Content */}

@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { formatDate, getDomain, cn } from "@/lib/utils";
 import { CATEGORY_COLORS } from "@/lib/constants";
-import { getScreenshotUrl } from "@/lib/og-fetcher";
+import AppScreenshot from "@/components/apps/app-screenshot";
 import CommentList from "@/components/comments/comment-list";
 import { Comment } from "@/types";
 import {
@@ -62,16 +61,7 @@ export default async function AppDetailPage({ params }: PageProps) {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden mb-6">
           {/* Thumbnail */}
-          <div className="relative aspect-video bg-slate-100">
-            <Image
-              src={getScreenshotUrl(app.url)}
-              alt={app.title}
-              fill
-              className="object-cover"
-              unoptimized
-              priority
-            />
-          </div>
+          <AppScreenshot url={app.url} title={app.title} category={app.category} />
 
           {/* App info */}
           <div className="p-6">

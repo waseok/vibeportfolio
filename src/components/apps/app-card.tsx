@@ -4,15 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { MessageSquare, Eye, ExternalLink } from "lucide-react";
 import { AppItem } from "@/types";
-import { cn, getInitials } from "@/lib/utils";
-import { CATEGORY_COLORS, CATEGORY_GRADIENTS } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { CATEGORY_COLORS } from "@/lib/constants";
+import { getScreenshotUrl } from "@/lib/og-fetcher";
 
 interface AppCardProps {
   app: AppItem;
 }
 
 export default function AppCard({ app }: AppCardProps) {
-  const gradient = CATEGORY_GRADIENTS[app.category] || CATEGORY_GRADIENTS["기타"];
   const badgeColor = CATEGORY_COLORS[app.category] || CATEGORY_COLORS["기타"];
 
   async function handleClick() {
@@ -29,26 +29,13 @@ export default function AppCard({ app }: AppCardProps) {
       >
         {/* Thumbnail */}
         <div className="relative aspect-video bg-slate-100 overflow-hidden">
-          {app.thumbnailUrl ? (
-            <Image
-              src={app.thumbnailUrl}
-              alt={app.title}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          ) : (
-            <div
-              className={cn(
-                "absolute inset-0 bg-gradient-to-br flex items-center justify-center",
-                gradient
-              )}
-            >
-              <span className="text-white text-2xl font-bold opacity-80">
-                {getInitials(app.title)}
-              </span>
-            </div>
-          )}
+          <Image
+            src={getScreenshotUrl(app.url)}
+            alt={app.title}
+            fill
+            className="object-cover"
+            unoptimized
+          />
         </div>
 
         {/* Content */}

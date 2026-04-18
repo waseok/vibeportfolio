@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { formatDate, getDomain, cn } from "@/lib/utils";
-import { CATEGORY_COLORS, CATEGORY_GRADIENTS } from "@/lib/constants";
-import { getInitials } from "@/lib/utils";
+import { CATEGORY_COLORS } from "@/lib/constants";
+import { getScreenshotUrl } from "@/lib/og-fetcher";
 import CommentList from "@/components/comments/comment-list";
 import { Comment } from "@/types";
 import {
@@ -36,7 +36,6 @@ export default async function AppDetailPage({ params }: PageProps) {
   if (!app) notFound();
 
   const tags: string[] = app.tags;
-  const gradient = CATEGORY_GRADIENTS[app.category] || CATEGORY_GRADIENTS["기타"];
   const badgeColor = CATEGORY_COLORS[app.category] || CATEGORY_COLORS["기타"];
   const comments: Comment[] = app.comments.map((c) => ({
     ...c,
@@ -64,27 +63,14 @@ export default async function AppDetailPage({ params }: PageProps) {
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden mb-6">
           {/* Thumbnail */}
           <div className="relative aspect-video bg-slate-100">
-            {app.thumbnailUrl ? (
-              <Image
-                src={app.thumbnailUrl}
-                alt={app.title}
-                fill
-                className="object-cover"
-                unoptimized
-                priority
-              />
-            ) : (
-              <div
-                className={cn(
-                  "absolute inset-0 bg-gradient-to-br flex items-center justify-center",
-                  gradient
-                )}
-              >
-                <span className="text-white text-4xl font-bold opacity-80">
-                  {getInitials(app.title)}
-                </span>
-              </div>
-            )}
+            <Image
+              src={getScreenshotUrl(app.url)}
+              alt={app.title}
+              fill
+              className="object-cover"
+              unoptimized
+              priority
+            />
           </div>
 
           {/* App info */}

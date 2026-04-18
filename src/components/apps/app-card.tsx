@@ -28,21 +28,24 @@ export default function AppCard({ app }: AppCardProps) {
       "bg-white border border-slate-200 border-t-4 rounded-lg overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col",
       borderColor
     )}>
-      <Link
-        href={`/apps/${app.id}`}
-        className="block flex-1"
-        onClick={handleClick}
-      >
-        {/* Thumbnail */}
+      <Link href={`/apps/${app.id}`} className="block flex-1" onClick={handleClick}>
+        {/* 제목 영역 */}
+        <div className="px-4 py-3 flex items-start justify-between gap-2">
+          <h3 className="font-bold text-slate-900 text-base leading-snug line-clamp-2 flex-1">
+            {app.title}
+          </h3>
+          <span className={cn("flex-shrink-0 text-xs font-medium px-2 py-0.5 rounded-full mt-0.5", badgeColor)}>
+            {app.category}
+          </span>
+        </div>
+
+        {/* 썸네일 */}
         <div className="relative aspect-video overflow-hidden">
-          {/* 그라디언트 폴백 */}
           <div className={cn("absolute inset-0 bg-gradient-to-br flex items-center justify-center", gradient)}>
             <span className="text-white text-2xl font-bold opacity-80">
               {getInitials(app.title)}
             </span>
           </div>
-
-          {/* 스크린샷 */}
           {!screenshotError && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -56,40 +59,27 @@ export default function AppCard({ app }: AppCardProps) {
               onError={() => setScreenshotError(true)}
             />
           )}
-
-          {/* 제목 오버레이 */}
-          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-3 pt-6 pb-2.5">
-            <p className="text-white text-sm font-bold leading-snug line-clamp-2 drop-shadow">
-              {app.title}
-            </p>
-          </div>
         </div>
 
-        {/* Content */}
-        <div className="p-3.5">
-          <p className="text-xs text-slate-500 line-clamp-2 mb-3">
-            {app.description}
-          </p>
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1">
-                <Eye className="w-3.5 h-3.5" />
-                {app.clickCount.toLocaleString()}
-              </span>
-              <span className="flex items-center gap-1">
-                <MessageSquare className="w-3.5 h-3.5" />
-                {app._count?.comments ?? 0}
-              </span>
-            </div>
-            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full", badgeColor)}>
-              {app.category}
+        {/* 설명 + 통계 */}
+        <div className="px-4 py-3">
+          <p className="text-xs text-slate-500 line-clamp-2 mb-3">{app.description}</p>
+          <div className="flex items-center gap-3 text-xs text-slate-400">
+            <span className="flex items-center gap-1">
+              <Eye className="w-3.5 h-3.5" />
+              {app.clickCount.toLocaleString()}
             </span>
+            <span className="flex items-center gap-1">
+              <MessageSquare className="w-3.5 h-3.5" />
+              {app._count?.comments ?? 0}
+            </span>
+            <span className="ml-auto">{app.submitterName}</span>
           </div>
         </div>
       </Link>
 
-      {/* External link button */}
-      <div className="px-3.5 pb-3">
+      {/* 바로 열기 버튼 */}
+      <div className="px-4 pb-4">
         <a
           href={app.url}
           target="_blank"
